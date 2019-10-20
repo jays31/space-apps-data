@@ -1,0 +1,29 @@
+---
+title: "CSA"
+output: html_notebook
+---
+
+```{r}
+library(stringr)
+library(dplyr)
+data  <- read.csv2("Radi-N2-Schools-project-data1.csv", header = TRUE, sep =",")
+novaScotiaErr <-filter(data,Province.Territory== "Nouvelle-?cosse")
+novaScotiaErr["Province.Territory"] = "Nova Scotia"
+errorData <- filter(data,Province.Territory!= "Nouvelle-?cosse")
+combindedData <- bind_rows(errorData,novaScotiaErr)
+replaceCity <- filter(combindedData, City =="Dartmouth N.-E.")
+replaceCity["City"] = "Dartmouth"
+errorCity <- filter(combindedData, City != "Dartmouth N.-E.")
+finalData <- bind_rows(replaceCity,errorCity)
+finalData
+groupCity <- group_by(finalData,City) %>% summarise("Mean of # Bubbles"= mean(Number.of.bubbles))
+groupCity
+
+write.csv(finalData, file ="Radi-N2-Schools-project-data.csv", sep=",", row.names = FALSE)
+```
+
+```{r}
+data  <- read.csv2("Radi-N2 -ISS data.csv", header = TRUE, sep =",")
+data
+```
+
